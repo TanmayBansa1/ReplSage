@@ -1,6 +1,5 @@
 'use client'
 import { Bot, CreditCardIcon, LayoutDashboard, Plus, Presentation } from "lucide-react"
-
 import Link from "next/link"
 import { redirect, usePathname } from "next/navigation"
 import {
@@ -14,6 +13,7 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    useSidebar,
 } from "~/components/ui/sidebar"
 import { cn } from "~/lib/utils"
 import { Separator } from "./ui/separator"
@@ -54,13 +54,16 @@ const projects = [
 ]
 export default function AppSidebar() {
     const pathname = usePathname()
+    const { open } = useSidebar()
     return (
         <Sidebar collapsible="icon" variant="floating">
             <SidebarHeader >
                 <div>
                     <Link href="/" className="flex items-center gap-1">
                         <Image src="/logo.png" alt="logo" width={84} height={56} />
-                        <span className="text-2xl font-bold">ReplSage</span>
+                        {open && (
+                            <span className="text-2xl font-bold text-primary">ReplSage</span>
+                        )}
                     </Link>
                 </div>
             </SidebarHeader>
@@ -77,7 +80,7 @@ export default function AppSidebar() {
                                 items.map((item, index) => (
                                     <SidebarMenuItem key={index}>
                                         <SidebarMenuButton asChild>
-                                            <Link href={item.href} className={cn("hover:bg-primary/50", { 'bg-primary text-white': pathname === item.href })}>
+                                            <Link href={item.href} className={cn("hover:bg-slate-200", { 'bg-primary text-white': pathname === item.href })}>
                                                 <item.icon />
                                                 <span>{item.title}</span>
                                             </Link>
@@ -91,7 +94,7 @@ export default function AppSidebar() {
                 <Separator></Separator>
                 <SidebarGroup>
                     <SidebarGroupLabel>
-                        PROJECTS
+                        YOUR PROJECTS
                     </SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
@@ -99,8 +102,8 @@ export default function AppSidebar() {
                             {projects.map((project, index) => (
                                 <SidebarMenuItem key={index}>
                                     <SidebarMenuButton asChild>
-                                        <div className="hover:bg-primary/50">
-                                            <div className={cn('border-slate-400 border rounded-lg size-6 bg-white text-primary text-sm flex items-center justify-center hover:bg-primary/50', { 'bg-primary rounded-lg text-white': true })}>
+                                        <div className="hover:bg-slate-200">
+                                            <div className={cn('border-slate-400 border rounded-lg size-6 bg-white text-primary text-sm flex items-center justify-center hover:bg-slate-200', { 'bg-primary rounded-lg text-white': false })}>
                                                 {project.name[0]?.toUpperCase()}
                                             </div>
                                             <span>{project.name}</span>
@@ -113,13 +116,28 @@ export default function AppSidebar() {
                 </SidebarGroup>
                 <Separator></Separator>
                 <SidebarGroup>
-                    <SidebarGroupContent className="flex justify-center items-center">
+                    <SidebarGroupContent >
+                        <SidebarMenu className="flex justify-center items-center">
+                            <SidebarMenuItem >
+                                <SidebarMenuButton asChild>
+                                    {open ? (
 
-                        <Button variant="outline" onClick={()=>{
-                            redirect('/create')
-                        }}>
-                            {<Plus></Plus>}Create Project
-                        </Button>
+                                        
+                                        <Button variant="outline" onClick={() => {
+                                            redirect('/create')
+                                        }}>
+                                        {<Plus></Plus>}Create Project
+                                    </Button>
+                                        ): (
+                                            <Button variant="outline" onClick={() => {
+                                                redirect('/create')
+                                            }}>
+                                            {<Plus></Plus>}
+                                        </Button>)
+                                    }
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
