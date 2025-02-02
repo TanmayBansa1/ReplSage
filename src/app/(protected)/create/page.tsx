@@ -2,20 +2,38 @@
 import Image from 'next/image'
 import React from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
-
+import { api } from '~/trpc/react'
+import { useRouter } from 'next/navigation'
 interface FormInput {
     name: string,
     url: string,
     githubToken?: string
 }
 const CreateProject = () => {
+    const router = useRouter();
     const { register, handleSubmit, reset } = useForm<FormInput>()
-
+    const createProject = api.project.createProject.useMutation();
+    const utils = api.useUtils();
     function submitHandler(data: FormInput) {
-        console.log(data)
-        alert(JSON.stringify(data))
+        createProject.mutate({
+            name: data.name,
+            url: data.url,
+            githubToken: data.githubToken
+        }, {
+            onSuccess: ()=>{
+                toast.success('Project created')
+                utils.project.getProjects.invalidate()
+                reset()
+            },
+            onError: (err)=>{
+                toast.error('Something went wrong')
+            }
+        })
+        
+        return true;
     }
 
     return (
@@ -33,7 +51,7 @@ const CreateProject = () => {
                         <Input required {...register("name")} placeholder='Enter the name of your Project'></Input>
                         <Input type='url' required {...register("url")} placeholder='Enter the URL of your Project'></Input>
                         <Input {...register("githubToken")} placeholder='Enter your GitHub Token (Optional)'></Input>
-                        <Button type='submit'> Create Project</Button>
+                        <Button disabled={createProject.isPending} type='submit'>Create Project</Button>
                     </form>
                 </div>
             </div>

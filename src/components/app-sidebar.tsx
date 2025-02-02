@@ -19,6 +19,8 @@ import { cn } from "~/lib/utils"
 import { Separator } from "./ui/separator"
 import { Button } from "./ui/button"
 import Image from "next/image"
+import { api } from "~/trpc/react"
+import useProject from "~/hooks/use-project"
 const items = [
     {
         title: "Dashboard",
@@ -41,20 +43,22 @@ const items = [
         icon: CreditCardIcon,
     }
 ]
-const projects = [
-    {
-        name: "Project 1",
-    },
-    {
-        name: "Project 2",
-    },
-    {
-        name: "Project 3"
-    }
-]
+// const projects = [
+//     {
+//         name: "Project 1",
+//     },
+//     {
+//         name: "Project 2",
+//     },
+//     {
+//         name: "Project 3"
+//     }
+// ]
 export default function AppSidebar() {
     const pathname = usePathname()
     const { open } = useSidebar()
+    const { projects, selectedProjectID, setSelectedProjectID, project } = useProject()
+
     return (
         <Sidebar collapsible="icon" variant="floating">
             <SidebarHeader >
@@ -80,7 +84,7 @@ export default function AppSidebar() {
                                 items.map((item, index) => (
                                     <SidebarMenuItem key={index}>
                                         <SidebarMenuButton asChild>
-                                            <Link href={item.href} className={cn("hover:bg-slate-200", { 'bg-primary text-white': pathname === item.href })}>
+                                            <Link href={item.href} className={cn("hover:bg-slate-200 dark:hover:bg-slate-800", { 'bg-primary text-white': pathname === item.href })}>
                                                 <item.icon />
                                                 <span>{item.title}</span>
                                             </Link>
@@ -99,11 +103,11 @@ export default function AppSidebar() {
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {/* {render the projects here} */}
-                            {projects.map((project, index) => (
+                            {projects?.map((project, index) => (
                                 <SidebarMenuItem key={index}>
-                                    <SidebarMenuButton asChild>
-                                        <div className="hover:bg-slate-200">
-                                            <div className={cn('border-slate-400 border rounded-lg size-6 bg-white text-primary text-sm flex items-center justify-center hover:bg-slate-200', { 'bg-primary rounded-lg text-white': false })}>
+                                    <SidebarMenuButton asChild onClick={() => setSelectedProjectID(project.id)}>
+                                        <div className="hover:bg-slate-200 dark:hover:bg-slate-800">
+                                            <div className={cn('border-slate-400 border rounded-lg size-6 bg-white text-primary text-sm flex items-center justify-center hover:bg-slate-200', { 'bg-primary rounded-lg text-white': selectedProjectID === project.id })}>
                                                 {project.name[0]?.toUpperCase()}
                                             </div>
                                             <span>{project.name}</span>
