@@ -21,7 +21,7 @@ const CreateProject = () => {
         createProject.mutate({
             name: data.name,
             url: data.url,
-            githubToken: data.githubToken
+            githubToken: data.githubToken || undefined
         }, {
             onSuccess: ()=>{
                 toast.success('Project created')
@@ -29,11 +29,12 @@ const CreateProject = () => {
                 reset()
             },
             onError: (err)=>{
+                console.log(err)
                 toast.error('Something went wrong')
             }
         })
         
-        return true;
+        
     }
 
     return (
