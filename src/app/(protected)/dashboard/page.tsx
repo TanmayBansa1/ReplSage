@@ -2,6 +2,7 @@
 import { ExternalLink, Github } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react'
+import CommitLog from '~/components/commit-log';
 import useProject from '~/hooks/use-project';
 
 
@@ -12,9 +13,9 @@ const Dashboard = () => {
     <div>
       <div className='flex items-center justify-between gap-y-4 flex-wrap'>
         {/* github link */}
-        <div className='max-w-xl w-full rounded-lg bg-primary px-4 py-3 flex items-start gap-3'>
+        <div className='max-w-xl w-fit rounded-lg bg-primary px-4 py-3 flex items-center justify-center gap-3'>
           <Github className='size-6 text-white mt-1 flex-shrink-0'></Github>
-          <div className='flex-grow'>
+          <div className='flex-grow justify-center items-center'>
             <Link 
               href={project?.url || "/dashboard"} 
               className='text-sm text-white flex items-center gap-2 break-all hover:underline'
@@ -45,7 +46,7 @@ const Dashboard = () => {
       </div>
 
       <div className="mt-8">
-        Commit log
+        <CommitLog></CommitLog>
       </div>
     </div>
   )

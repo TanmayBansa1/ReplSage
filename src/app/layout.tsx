@@ -1,10 +1,10 @@
 import "~/styles/globals.css";
-
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TRPCReactProvider } from "~/trpc/react";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "~/components/theme-provider";
 
 export const metadata: Metadata = {
   title: "ReplSage",
@@ -17,13 +17,21 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <ClerkProvider>
-
-    <html lang="en" className={`${GeistSans.variable}`}>
-      <body className="dark">
-        <TRPCReactProvider>{children}</TRPCReactProvider>
-        <Toaster />
-      </body>
-    </html>
+      <html lang="en" className={`${GeistSans.variable}`}>
+        <body >
+          <TRPCReactProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+              <Toaster />
+            </ThemeProvider>
+          </TRPCReactProvider>
+        </body>
+      </html>
     </ClerkProvider>
   );
 }

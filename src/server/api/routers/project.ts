@@ -38,5 +38,19 @@ export const projectRouter = createTRPCRouter({
                 deletedAt: null
             }
         })
+    }),
+    getCommits: protectedProcedure.input(
+        z.object({
+            projectId: z.string(),
+        })
+    ).query(async ({ ctx, input }) => {
+        pollCommits(input.projectId).then().catch((err) => {
+            console.log(err)
+        })
+        return await ctx.db.commit.findMany({
+            where: {
+                projectId: input.projectId,
+            }
+        })  
     })
 })
