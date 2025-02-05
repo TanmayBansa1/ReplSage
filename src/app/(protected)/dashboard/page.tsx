@@ -2,6 +2,7 @@
 import { ExternalLink, Github } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react'
+import QuestionCard from '~/components/ask-question-card';
 import CommitLog from '~/components/commit-log';
 import useProject from '~/hooks/use-project';
 
@@ -39,7 +40,7 @@ const Dashboard = () => {
 
       <div className='mt-4'>
         <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 '>
-          AskQueastion CreditCardIcon
+          <QuestionCard></QuestionCard> CreditCardIcon
           Meeting Card
 
         </div>

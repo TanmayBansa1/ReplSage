@@ -6,9 +6,13 @@ const useProject = () => {
     const { data: projects } = api.project.getProjects.useQuery()
     const [selectedProjectID, setSelectedProjectID] = useLocalStorage("replsage-selected-project", "")
     const project = projects?.find((project) => project.id === selectedProjectID)
-  return (
-    { projects, selectedProjectID, setSelectedProjectID, project }
-  )
+
+    return React.useMemo(() => ({
+        projects, 
+        selectedProjectID, 
+        setSelectedProjectID, 
+        project
+    }), [projects, selectedProjectID, project])
 }
 
 export default useProject
