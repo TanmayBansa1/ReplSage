@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React from 'react'
 import QuestionCard from '~/components/ask-question-card';
 import CommitLog from '~/components/commit-log';
+import MeetingCard from '~/components/meeting-card';
 import useProject from '~/hooks/use-project';
 
 
@@ -40,8 +41,8 @@ const Dashboard = () => {
 
       <div className='mt-4'>
         <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 '>
-          <QuestionCard></QuestionCard> CreditCardIcon
-          Meeting Card
+          <QuestionCard></QuestionCard>
+          <MeetingCard></MeetingCard>
 
         </div>
       </div>

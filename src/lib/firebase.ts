@@ -1,21 +1,20 @@
 // Import the functions you need from the SDKs you need
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage"
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage"
-import { error } from "console";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "AIzaSyDgfjKU8W_J1ej1720GDzljfZQwPhyG6AU",
-    authDomain: "replsage.firebaseapp.com",
-    projectId: "replsage",
-    storageBucket: "replsage.firebasestorage.app",
-    messagingSenderId: "718909145623",
-    appId: "1:718909145623:web:5dffdcbdedfe9206059252",
-    measurementId: "G-1FYT3TENCN"
+  apiKey: "AIzaSyD6emiOkNohRAt165R_ydZj0DvFrK5ik48",
+  authDomain: "replsage-f928b.firebaseapp.com",
+  projectId: "replsage-f928b",
+  storageBucket: "replsage-f928b.firebasestorage.app",
+  messagingSenderId: "1054921066051",
+  appId: "1:1054921066051:web:7608ab429f984b3313b6f6",
+  measurementId: "G-JW0BYK7H4Z"
 };
 
 // Initialize Firebase
