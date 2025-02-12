@@ -6,10 +6,17 @@ import { Card } from './ui/card'
 import { Presentation, Upload } from 'lucide-react'
 import { Button } from './ui/button'
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar'
+import { api } from '~/trpc/react'
+import  useProject  from '~/hooks/use-project'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 const MeetingCard = () => {
+    const router = useRouter()
+    const { project } = useProject()
     const [isUploading, setIsUploading] = React.useState(false)
     const [progress, setProgress] = React.useState(0)
+    const uploadMeeting = api.project.uploadMeeting.useMutation();
     const { getRootProps, getInputProps } = useDropzone({
         accept: {
             "audio/*": [".mp3", "wav", ".mp4"]
@@ -17,10 +24,35 @@ const MeetingCard = () => {
         multiple: false,
         maxSize: 50_000_000,
         onDrop: async (acceptedFiles) => {
+            if(!project){
+                throw new Error("no project selected, unexpected error")
+            }
             setIsUploading(true);
-            const fileDownloadUrl = await uploadFile(acceptedFiles[0] as File, setProgress);
+            const file = acceptedFiles[0] as File;
+            if(!file){
+                throw new Error("no file selected, unexpected error")
+            }
+            const fileDownloadUrl = await uploadFile(file, setProgress) as string;
+            uploadMeeting.mutate({
+                projectId: project!.id,
+                meetingUrl: fileDownloadUrl,
+                name: file.name
+            }, {
+                onSuccess: () => {
+                    setIsUploading(false);
+                    setProgress(0)
+                    toast.success("Meeting uploaded")
+                    router.push('/meetings')
+                },
+                onError: () => {
+                    setIsUploading(false);
+                    setProgress(0)
+                    toast.error("Error while uploading meeting")
+                }
+            })
             setIsUploading(false);
-        }
+        },
+        
     })
 
   return (
