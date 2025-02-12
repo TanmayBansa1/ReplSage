@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import React from 'react'
+import { toast } from 'sonner'
 import MeetingCard from '~/components/meeting-card'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
@@ -14,6 +15,8 @@ const Meetings = (props: Props) => {
     const { data: meetings, isLoading } = api.project.getMeetings.useQuery({ projectId: selectedProjectID }, {
         refetchInterval: 10000
     })
+    const deleteMeeting = api.project.deleteMeeting.useMutation();
+    const utils = api.useUtils();
     return (
         <div>
             <MeetingCard></MeetingCard>
@@ -64,6 +67,19 @@ const Meetings = (props: Props) => {
                                     View Meeting
                                 </Button>
                             </Link>
+                            <Button variant={'destructive'} disabled={deleteMeeting.isPending} onClick={() => deleteMeeting.mutate({ meetingId: meeting.id }
+                                , {
+                                    onSuccess: () => {
+                                        toast.success("Meeting deleted")
+                                        utils.project.getMeetings.invalidate()
+                                    },
+                                    onError: (err) => {
+                                        toast.error("Error while deleting meeting")
+                                    }
+                                }
+                            )}>
+                                {deleteMeeting.isPending ? 'Deleting...' : 'Delete'}
+                            </Button>
                         </div>
                     </li>
                 ))}

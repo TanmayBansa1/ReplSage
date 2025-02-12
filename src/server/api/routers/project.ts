@@ -2,6 +2,9 @@ import { pollCommits } from "~/lib/github";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { z } from "zod";
 import { indexGitRepo } from "~/lib/github-loader";
+import { transcribeMeeting } from "~/lib/assemblyai";
+
+const MAX_DURATION = 300;
 
 export const projectRouter = createTRPCRouter({
     createProject: protectedProcedure.input(
@@ -154,5 +157,17 @@ export const projectRouter = createTRPCRouter({
                 createdAt: 'desc'
             }
         })
+    }),
+    deleteMeeting: protectedProcedure.input(
+        z.object({
+            meetingId: z.string(),
+        })
+    ).mutation(async ({ ctx, input }) => {
+         await ctx.db.meeting.delete({
+            where: {
+                id: input.meetingId,
+            }
+        })
+        
     })
 })
