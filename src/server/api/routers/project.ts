@@ -169,5 +169,19 @@ export const projectRouter = createTRPCRouter({
             }
         })
         
+    }),
+    getMeetingbyId: protectedProcedure.input(
+        z.object({
+            meetingId: z.string(),
+        })
+    ).query(async ({ ctx, input }) => {
+        return await ctx.db.meeting.findUnique({
+            where: {
+                id: input.meetingId,
+            },
+            include: {
+                issues: true
+            }
+        })
     })
 })

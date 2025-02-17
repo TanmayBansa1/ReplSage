@@ -38,7 +38,7 @@ const Meetings = (props: Props) => {
                         <div>
                             <div className='min-w-0'>
                                 <div className='flex items-center gap-2'>
-                                    <Link href={`/meetings/${meeting.id}`} className='text-sm font-semibold'>
+                                    <Link href={`/meetings/${meeting.id}`} className='text-lg font-semibold'>
                                         {meeting.name}
                                     </Link>
                                     {meeting.status === 'PROCESSING' && (
