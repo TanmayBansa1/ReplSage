@@ -7,6 +7,7 @@ import QuestionCard from '~/components/ask-question-card';
 import CommitLog from '~/components/commit-log';
 import InviteButton from '~/components/invite-button';
 import MeetingCard from '~/components/meeting-card';
+import TeamMembers from '~/components/team-members';
 import useProject from '~/hooks/use-project';
 
 
@@ -32,7 +33,7 @@ const Dashboard = () => {
           <div className='h-4'></div>
 
           <div className='flex items-center gap-4'>
-            Team Members
+            <TeamMembers></TeamMembers>
             <InviteButton></InviteButton>
             <ArchiveButton></ArchiveButton>
           </div>
