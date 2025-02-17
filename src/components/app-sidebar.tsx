@@ -19,7 +19,6 @@ import { cn } from "~/lib/utils"
 import { Separator } from "./ui/separator"
 import { Button } from "./ui/button"
 import Image from "next/image"
-import { api } from "~/trpc/react"
 import useProject from "~/hooks/use-project"
 const items = [
     {

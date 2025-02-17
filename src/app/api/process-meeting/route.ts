@@ -24,8 +24,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing meetingUrl or meetingId' }, { status: 400 });
     }
 
-    // Set a timeout
-// 5 minutes
+    // Set a timeout 5 minutes
 
 
     try {

@@ -8,9 +8,9 @@ import { Button } from '~/components/ui/button'
 import useProject from '~/hooks/use-project'
 import { api } from '~/trpc/react'
 
-type Props = {}
 
-const Meetings = (props: Props) => {
+
+const Meetings = () => {
     const { selectedProjectID } = useProject()
     const { data: meetings, isLoading } = api.project.getMeetings.useQuery({ projectId: selectedProjectID }, {
         refetchInterval: 10000
