@@ -23,7 +23,7 @@ export async function createCheckoutSession(credits: number){
         ],
         customer_creation: 'always',
         mode: 'payment',
-        success_url: `${process.env.NEXT_PUBLIC_URL}/dashboard`,
+        success_url: `${process.env.NEXT_PUBLIC_URL}/billing`,
         cancel_url: `${process.env.NEXT_PUBLIC_URL}/billing`,
         client_reference_id: userId!.toString(),
         metadata: {
