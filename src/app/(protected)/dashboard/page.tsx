@@ -2,6 +2,7 @@
 import { ExternalLink, Github } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react'
+import ArchiveButton from '~/components/archive-button';
 import QuestionCard from '~/components/ask-question-card';
 import CommitLog from '~/components/commit-log';
 import MeetingCard from '~/components/meeting-card';
@@ -31,9 +32,8 @@ const Dashboard = () => {
 
           <div className='flex items-center gap-4'>
             Team Members
-            Archive Button
             Invitation Button
-
+            <ArchiveButton></ArchiveButton>
           </div>
 
 
