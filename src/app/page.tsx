@@ -1,8 +1,23 @@
+'use client';
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-export default async function Home() {
+export default function Home() {
+  const router = useRouter();
+  const { userId } = useAuth();
+
+  useEffect(() => {
+    if (userId) {
+      router.push("/dashboard");
+    } else {
+      router.push("/sign-in");
+    }
+  }, [userId, router]);
+
   return (
     <div>
-      Hello from the server
+      Redirecting ...
     </div>
   );
 }
