@@ -1,7 +1,7 @@
 import { pollCommits } from "~/lib/github";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { z } from "zod";
-import { indexGitRepo } from "~/lib/github-loader";
+import { checkCredits, indexGitRepo } from "~/lib/github-loader";
 import { transcribeMeeting } from "~/lib/assemblyai";
 
 const MAX_DURATION = 300;
@@ -18,6 +18,25 @@ export const projectRouter = createTRPCRouter({
         })
     ).mutation(async ({ ctx, input }) => {
         try {
+            const user = await ctx.db.user.findUnique({
+                where: {
+                    id: ctx.user.userId!
+                },
+                select: {
+                    credits: true
+                }
+            })
+            if (!user) {
+                throw new Error("User not found");
+            }
+
+            if (user.credits === 0) {
+                throw new Error("You have no credits left");
+            }
+            const fileCount = await checkCredits(input.url,input.githubToken)
+            if (fileCount > user.credits) {
+                throw new Error("You don't have enough credits to add this repository");
+            }
             // Check if project with same URL already exists for this user
             const existingProject = await ctx.db.project.findFirst({
                 where: {
@@ -50,7 +69,17 @@ export const projectRouter = createTRPCRouter({
             // Perform async operations without blocking the response
             Promise.all([
                 indexGitRepo({gitUrl: input.url, gitToken: input.githubToken, projectId: project.id}),
-                pollCommits(project.id)
+                await pollCommits(project.id),
+                await ctx.db.user.update({
+                    where: {
+                        id: ctx.user.userId!
+                    },
+                    data: {
+                        credits: {
+                            decrement: fileCount
+                        }
+                    }
+                })
             ]).catch(err => {
                 console.error('Background project setup error:', err);
             });
@@ -221,5 +250,22 @@ export const projectRouter = createTRPCRouter({
                 credits: true
             }
         })
+    }),
+    checkCredits: protectedProcedure.input(
+        z.object({
+            githubUrl: z.string(),
+            githubToken: z.string().optional()
+        })
+    ).mutation(async ({ ctx, input }) => {
+        const fileCount = await checkCredits(input.githubUrl,input.githubToken)
+        const userCredits = await ctx.db.user.findUnique({
+            where: {
+                id: ctx.user.userId!
+            },
+            select: {
+                credits: true
+            }
+        })
+        return {fileCount, userCredits: userCredits?.credits || 0}
     })
 })

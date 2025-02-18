@@ -7,6 +7,7 @@ import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { api } from '~/trpc/react'
 import { useRouter } from 'next/navigation'
+import { Info } from 'lucide-react'
 interface FormInput {
     name: string,
     url: string,
@@ -16,27 +17,38 @@ const CreateProject = () => {
     const router = useRouter();
     const { register, handleSubmit, reset } = useForm<FormInput>()
     const createProject = api.project.createProject.useMutation();
+    const checkCredits = api.project.checkCredits.useMutation();
     const utils = api.useUtils();
     function submitHandler(data: FormInput) {
-        createProject.mutate({
-            name: data.name,
-            url: data.url,
-            githubToken: data.githubToken || undefined
-        }, {
-            onSuccess: ()=>{
-                toast.success('Project created')
-                utils.project.getProjects.invalidate()
-                reset()
-            },
-            onError: (err)=>{
-                console.log(err)
-                toast.error('Something went wrong')
-            }
-        })
-        
-        
-    }
 
+        if (checkCredits.data) {
+
+            createProject.mutate({
+                name: data.name,
+                url: data.url,
+                githubToken: data.githubToken || undefined
+            }, {
+                onSuccess: () => {
+                    toast.success('Project created')
+                    utils.project.getProjects.invalidate()
+                    reset()
+                },
+                onError: (err) => {
+                    console.log(err)
+                    toast.error('Something went wrong')
+                }
+            })
+        } else {
+            checkCredits.mutate(
+                {
+                    githubUrl: data.url, githubToken: data.githubToken
+                }
+            );
+        }
+
+
+    }
+    const hasEnoughCredits = checkCredits?.data?.userCredits ? checkCredits.data?.userCredits >= checkCredits.data?.fileCount: true
     return (
         <div className='h-full flex items-center justify-center gap-12'>
             <div>
@@ -52,7 +64,17 @@ const CreateProject = () => {
                         <Input required {...register("name")} placeholder='Enter the name of your Project'></Input>
                         <Input type='url' required {...register("url")} placeholder='Enter the URL of your Project'></Input>
                         <Input {...register("githubToken")} placeholder='Enter your GitHub Token (Optional)'></Input>
-                        <Button disabled={createProject.isPending} type='submit'>Create Project</Button>
+
+                        {checkCredits.data && (
+                            <div className='mt-4 bg-orange-100 px-4 -y-2 rounded-lg border border-orange-200 text-orange-500 '>
+                                <div className='flex items-center gap-2'>
+                                    <Info className='size-4'></Info>
+                                    <p className='text-sm'>You will be charged <strong>{checkCredits.data?.fileCount}</strong>credits for this repository</p>
+                                </div>
+                                <p className='text-sm text-blue-600 ml-6'>You have <strong>{checkCredits.data?.userCredits}</strong> credits remaining</p>
+                            </div>
+                        )}
+                        <Button disabled={createProject.isPending || checkCredits.isPending || !hasEnoughCredits} type='submit'>{checkCredits.data ? "Create Project" : "Check Credits"}</Button>
                     </form>
                 </div>
             </div>
