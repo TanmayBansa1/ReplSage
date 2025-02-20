@@ -1,29 +1,77 @@
-# Create T3 App
+# ReplSage: AI-Powered Project Collaboration Platform
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+## 🚀 Project Overview
 
-## What's next? How do I make an app with this?
+ReplSage is an innovative web application designed to streamline project collaboration, knowledge management, and AI-assisted development. It provides developers and teams with powerful tools to enhance productivity and project understanding.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## 🏗️ Architecture
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+### Tech Stack
+- **Frontend**: 
+  - Next.js 14 (React Framework)
+  - TypeScript
+  - Tailwind CSS
+  - Radix UI Components
+  - Shadcn/ui for UI components
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+- **Backend**:
+  - tRPC for type-safe API routes
+  - Prisma ORM for database management
+  - PostgreSQL database
+  - Clerk for authentication
 
-## Learn More
+- **AI & Media Integration**:
+  - Google AI SDK
+  - LangChain for AI workflows
+  - AssemblyAI for advanced audio transcription
+  - Generative AI for intelligent features
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+- **Cloud & Infrastructure**:
+  - Firebase for real-time database and authentication
+  - Stripe for payment processing and subscription management
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+### Key Features
+- Project Dashboard
+- AI-Powered Q&A System
+- Meeting Management, AI based Issue recognition and summarization
+- GitHub Project Integration
+- Team Collaboration Tools
+- Audio Transcription
+- Simple billing managemen for credits
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+## 🛠️ Core Technologies
 
-## How do I deploy this?
+### Frontend Frameworks
+- **Next.js**: React framework with server-side rendering
+- **React**: Component-based UI library
+- **TypeScript**: Typed JavaScript for enhanced developer experience
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+### State Management
+- **React Hooks**: Local state management
+- **tRPC**: Type-safe API and data fetching
+- **Zustand/Context API**: Global state management
+
+### Authentication
+- **Clerk**: Secure, scalable authentication service
+
+### Database
+- **Prisma**: Modern database toolkit
+- **PostgreSQL**: Robust relational database
+- **Firebase Realtime Database**: Real-time data synchronization
+
+### AI Technologies
+- **Google Generative AI**: Advanced language models
+- **LangChain**: AI workflow orchestration
+- **AssemblyAI**: 
+  - Intelligent audio transcription
+  - Speech-to-text conversion
+  - Advanced audio analysis for meetings and discussions
+
+### Payment Integration
+- **Stripe**:
+  - Secure payment processing
+
+### UI/UX
+- **Tailwind CSS**: Utility-first CSS framework
+- **Lucide React**: Beautifully designed icons
+- **Shadcn/ui**: Beautifully designed components
