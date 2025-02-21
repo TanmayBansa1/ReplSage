@@ -101,11 +101,12 @@ const QuestionCard = () => {
           <CardTitle className='text-2xl font-semibold'>
             Ask a question
           </CardTitle>
+          <p className='text-xs text-muted-foreground'>It can take up to 6 minutes after you have created your project for Sage to understand your repository before it can answer questions </p>
         </CardHeader>
         <CardContent>
           <form onSubmit={onSubmit}>
             <Textarea className='text-xl font-semibold' placeholder={`how do i edit the favicon in ${project?.name} ?`} onChange={(e) => setQuestion(e.target.value)} />
-            <Button type='submit' className='mt-4 w-fit' disabled={loading}>
+            <Button type='submit' className='mt-3 w-fit' disabled={loading}>
               Ask Sage <SnowflakeIcon />
             </Button>
           </form>

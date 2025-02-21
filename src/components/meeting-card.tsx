@@ -86,11 +86,14 @@ const MeetingCard = () => {
                         Analyse your meeting with Sage
                         <br></br>
                         Powered by AI
+                        <br></br>
+                        <span className='text-xs text-muted-foreground'>Sample meeting here -- <a target='_blank' href="https://assembly.ai/sports_injuries.mp3" className='underline'>https://assembly.ai/sports_injuries.mp3</a></span>
                     </p>
-                    <div className="mt-8">
+                    <div className="mt-6">
                         <Button disabled={isUploading}>
                             <Upload className='-ml-0.5 mr-1.5 h-5 w-5'></Upload>
                             Upload Meeting 
+                            <input className='hidden' {...getInputProps()}></input>
                             <input className='hidden' {...getInputProps()}></input>
                         </Button>
                     </div>

@@ -30,7 +30,8 @@ export async function POST(req: NextRequest) {
     try {
 
           // Transcribe the meeting
-          const { summaries } = await transcribeMeeting("https://assembly.ai/sports_injuries.mp3");
+          //sample https://assembly.ai/sports_injuries.mp3
+          const { summaries } = await transcribeMeeting(meetingUrl);
           
           // Create issues from summaries
           await db.issue.createMany({
