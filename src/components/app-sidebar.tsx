@@ -42,6 +42,7 @@ const items = [
         icon: CreditCardIcon,
     }
 ]
+
 // const projects = [
 //     {
 //         name: "Project 1",
