@@ -5,19 +5,21 @@ import { useEffect } from "react";
 
 export default function Home() {
   const router = useRouter();
-  const { userId } = useAuth();
+  const { isLoaded, userId } = useAuth();
 
   useEffect(() => {
-    if (userId) {
-      router.push("/dashboard");
-    } else {
-      router.push("/sign-in");
+    if (isLoaded) {
+      if (userId) {
+        router.push("/dashboard");
+      } else {
+        router.push("/landing");
+      }
     }
-  }, [userId, router]);
+  }, [isLoaded, userId, router]);
 
   return (
     <div>
-      Redirecting ...
+      Redirecting...
     </div>
   );
 }

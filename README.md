@@ -37,7 +37,7 @@ ReplSage is an innovative web application designed to streamline project collabo
 - GitHub Project Integration
 - Team Collaboration Tools
 - Audio Transcription
-- Simple billing managemen for credits
+- Simple billing management for credits
 
 ## 🛠️ Core Technologies
 
@@ -49,7 +49,7 @@ ReplSage is an innovative web application designed to streamline project collabo
 ### State Management
 - **React Hooks**: Local state management
 - **tRPC**: Type-safe API and data fetching
-- **Zustand/Context API**: Global state management
+
 
 ### Authentication
 - **Clerk**: Secure, scalable authentication service
