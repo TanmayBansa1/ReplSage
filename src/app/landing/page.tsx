@@ -114,6 +114,33 @@ export default function LandingPage() {
     }
   };
 
+  const heroTitleVariants = {
+    hidden: { 
+      opacity: 0,
+      y: 50,
+    },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.2,
+        type: "spring",
+        stiffness: 300,
+        damping: 10
+      }
+    }),
+    hover: {
+      keyframes: [
+        { scale: 1.05, rotate: 5 },
+        { scale: 1.1, rotate: 10 },
+      ],
+      transition: {
+        duration: 0.3,
+        type: "spring"
+      }
+    }
+  };
+
   const titleVariants = {
     hidden: { 
       opacity: 0, 
@@ -150,8 +177,10 @@ export default function LandingPage() {
       }
     },
     hover: {
-      scale: 1.1,
-      rotate: 5,
+      keyframes: [
+        { scale: 1.05, rotate: 5 },
+        { scale: 1.1, rotate: 10 },
+      ],
       transition: {
         duration: 0.3,
         type: "spring"
@@ -178,8 +207,82 @@ export default function LandingPage() {
       }
     }
   };
-  
-  
+
+  const getStartedButtonVariants = {
+    hidden: { 
+      opacity: 0, 
+      scale: 0.6,
+      x: -50,
+      rotate: -15
+    },
+    visible: {
+      opacity: 1, 
+      scale: 1,
+      x: 0,
+      rotate: 0,
+      transition: {
+        type: "spring",
+        stiffness: 250,
+        damping: 10,
+        duration: 0.5
+      }
+    },
+    hover: {
+      scale: 1.05,
+      rotate: 3,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 5
+      }
+    },
+    tap: {
+      scale: 0.95,
+      transition: { 
+        duration: 0.1 
+      }
+    }
+  };
+
+  const AnimatedTitle = () => {
+    const title = "ReplSage: AI-Powered Code Exploration";
+    return (
+      <motion.h1 
+        className="text-5xl font-bold mb-6 text-primary flex flex-wrap justify-center"
+      >
+        {title.split(' ').map((word, index) => (
+          <motion.span
+            key={index}
+            custom={index}
+            variants={heroTitleVariants}
+            initial="hidden"
+            animate="visible"
+            whileHover="hover"
+            className="mr-3 inline-block origin-center"
+          >
+            {word}
+          </motion.span>
+        ))}
+      </motion.h1>
+    );
+  };
+
+  const AnimatedGetStartedButton = () => (
+    <motion.div
+      variants={getStartedButtonVariants}
+      initial="hidden"
+      animate="visible"
+      whileHover="hover"
+      whileTap="tap"
+      className="inline-block"
+    >
+      <Button className="group h-12 w-48 text-xl">
+        Get Started
+        <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform h-6 w-6" />
+      </Button>
+    </motion.div>
+  );
+
   return (
     <motion.div 
       initial="hidden"
@@ -221,12 +324,7 @@ export default function LandingPage() {
           variants={heroVariants}
           className="container mx-auto px-4 py-16 text-center"
           >
-          <motion.h1 
-            variants={titleVariants}
-            className="text-5xl font-bold mb-6 text-primary"
-            >
-            ReplSage: AI-Powered Code Exploration
-          </motion.h1>
+          <AnimatedTitle />
           <motion.p 
             variants={subtitleVariants}
             className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8"
@@ -239,16 +337,7 @@ export default function LandingPage() {
             className="flex justify-center space-x-4"
             >
             <Link href="/sign-up">
-              <motion.div
-                variants={buttonVariants}
-                whileHover="hover"
-                whileTap="tap"
-                >
-                <Button className="group h-12 w-48 text-xl">
-                  Get Started
-                  <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform h-6 w-6" />
-                </Button>
-              </motion.div>
+              <AnimatedGetStartedButton />
             </Link>
           </motion.div>
         </motion.section>
