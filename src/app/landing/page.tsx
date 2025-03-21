@@ -14,7 +14,6 @@ import {
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Typewriter from 'typewriter-effect';
-import { AuroraBackground } from '~/components/ui/aurora-background';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -141,56 +140,7 @@ export default function LandingPage() {
     }
   };
 
-  const titleVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 50,
-      scale: 0.8
-    },
-    visible: {
-      opacity: 1, 
-      y: 0,
-      scale: 1,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 10,
-        duration: 0.8
-      }
-    }
-  };
 
-  const buttonVariants = {
-    hidden: { 
-      opacity: 0, 
-      x: -50,
-      rotate: -10
-    },
-    visible: {
-      opacity: 1, 
-      x: 0,
-      rotate: 0,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 10
-      }
-    },
-    hover: {
-      keyframes: [
-        { scale: 1.05, rotate: 5 },
-        { scale: 1.1, rotate: 10 },
-      ],
-      transition: {
-        duration: 0.3,
-        type: "spring"
-      }
-    },
-    tap: { 
-      scale: 0.95,
-      transition: { duration: 0.1 }
-    }
-  };
 
   const subtitleVariants = {
     hidden: { 
