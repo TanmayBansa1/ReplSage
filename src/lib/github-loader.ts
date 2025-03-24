@@ -1,10 +1,9 @@
 import { GithubRepoLoader } from '@langchain/community/document_loaders/web/github'
-import { Document } from '@langchain/core/documents'
 import { generateEmbedding, summarizeCode } from './gemini'
 import { db } from '~/server/db'
 import { Octokit } from 'octokit'
 
-async function getFileCount(path: string, octokit: Octokit, githubOwner: string, githubRepo: string, acc: number = 0){
+async function getFileCount(path: string, octokit: Octokit, githubOwner: string, githubRepo: string, acc=0){
     const {data} = await octokit.rest.repos.getContent({
         owner: githubOwner,
         repo: githubRepo,
@@ -39,7 +38,7 @@ async function getFileCount(path: string, octokit: Octokit, githubOwner: string,
 export const checkCredits = async (githubUrl: string, githubToken?: string)=>{
 
     const octokit = new Octokit({
-        auth: githubToken || process.env.GITHUB_TOKEN
+        auth: githubToken ?? process.env.GITHUB_TOKEN
     })
 
     const githubOwner = githubUrl.split('/')[3]
@@ -59,7 +58,7 @@ export async function LoadGitRepo({ gitUrl, gitToken }: { gitUrl: string, gitTok
     for (const branch of possibleBranches) {
         try {
             const loader = new GithubRepoLoader(gitUrl, {
-                accessToken: gitToken || process.env.GITHUB_TOKEN,
+                accessToken: gitToken ?? process.env.GITHUB_TOKEN,
                 ignoreFiles: [".gitignore", ".gitattributes", ".git/", "package-lock.json", "yarn.lock", "pnpm-lock.yaml", "pnpm-workspace.yaml", "bun.lockb", "node_modules", ".DS_Store", "venv",
                     ".env", "**/.svg", "**/*.svg", "**/icons/**", "**/images/**"],
                 branch: branch,
@@ -89,25 +88,6 @@ export async function LoadGitRepo({ gitUrl, gitToken }: { gitUrl: string, gitTok
 3. Invalid GitHub URL
 4. Authentication failure
 Please check your repository URL and access token.`);
-}
-const generateEmbeddings = async (docs: Document[]) => {
-    // Filter out SVG files before generating embeddings
-    const nonSvgDocs = docs.filter(doc =>
-        !doc.metadata.source.toLowerCase().endsWith('.svg') &&
-        !doc.metadata.source.includes('/icons/') &&
-        !doc.metadata.source.includes('/images/')
-    );
-
-    return await Promise.all(nonSvgDocs.map(async (doc) => {
-        const codeSummary = await summarizeCode(doc)
-        const embedding = await generateEmbedding(codeSummary)
-        return {
-            codeSummary,
-            embedding,
-            sourceCode: JSON.parse(JSON.stringify(doc.pageContent)),
-            fileName: doc.metadata.source
-        }
-    }))
 }
 export async function indexGitRepo({ gitUrl, gitToken, projectId }: { gitUrl: string, gitToken?: string, projectId: string }) {
     try {
@@ -226,30 +206,4 @@ export async function indexGitRepo({ gitUrl, gitToken, projectId }: { gitUrl: st
         // Ensure database connection is closed
         await db.$disconnect();
     }
-}
-
-// Retry mechanism for database operations
-async function retryDatabaseOperation<T>(
-    operation: () => Promise<T>,
-    maxRetries = 3,
-    baseDelay = 1000
-): Promise<T> {
-    let lastError: Error | undefined;
-
-    for (let attempt = 0; attempt < maxRetries; attempt++) {
-        try {
-            return await operation();
-        } catch (error) {
-            lastError = error as Error;
-
-            // Exponential backoff
-            const delay = baseDelay * Math.pow(2, attempt);
-            console.warn(`Database operation failed. Retrying in ${delay}ms. Attempt ${attempt + 1}/${maxRetries}`);
-
-            await new Promise(resolve => setTimeout(resolve, delay));
-        }
-    }
-
-    console.error('Database operation failed after all retries:', lastError);
-    throw new Error(`Operation failed after ${maxRetries} attempts. Last error: ${lastError?.message}`);
 }

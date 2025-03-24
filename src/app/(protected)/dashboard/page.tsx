@@ -22,7 +22,7 @@ const Dashboard = () => {
           <Github className='size-6 text-white mt-1 flex-shrink-0'></Github>
           <div className='flex-grow justify-center items-center'>
             <Link 
-              href={project?.url || "/dashboard"} 
+              href={project?.url ?? "/dashboard"} 
               className='text-sm text-white flex items-center gap-2 break-all hover:underline'
             >
               {project?.url}

@@ -39,7 +39,7 @@ export const transcribeMeeting = async (meetingUrl: string)=>{
             headline: chapter.headline,
             
         }
-    }) || [])
+    }) ?? [])
 
     if(transcript.text === undefined || transcript.text === null){
         throw new Error('Transcript text is undefined or not found')
