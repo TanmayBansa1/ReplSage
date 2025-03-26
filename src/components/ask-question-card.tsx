@@ -138,7 +138,8 @@ const QuestionCard = () => {
             <Typewriter
               options={{
                 strings: ['Ask a question'],
-                autoStart: true
+                autoStart: true,
+                loop: true
               }}
               />
             </CardTitle>
