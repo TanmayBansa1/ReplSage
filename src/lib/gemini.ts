@@ -1,6 +1,6 @@
 'use server'
 import { GoogleGenerativeAI } from "@google/generative-ai"
-import { Document } from "@langchain/core/documents";
+import type { Document } from "@langchain/core/documents";
 import { streamText } from "ai"
 import { createStreamableValue } from "ai/rsc"
 import { createGoogleGenerativeAI } from "@ai-sdk/google"
@@ -162,7 +162,7 @@ export async function askQuestion(question: string, projectId: string) {
         context += `File Name: ${fileName}\nSummary: ${summary}\nCode:\n${sourceCode}\n\n`;
     }
 
-    const { textStream } = await streamText({
+    const { textStream } = streamText({
         model: google("gemini-1.5-flash"),
         prompt: `You are an ai code assistant, who answers questions about the codebase. 
         Your target audience is a technical intern.

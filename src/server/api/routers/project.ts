@@ -2,9 +2,7 @@ import { pollCommits } from "~/lib/github";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { z } from "zod";
 import { checkCredits, indexGitRepo } from "~/lib/github-loader";
-import { transcribeMeeting } from "~/lib/assemblyai";
 
-const MAX_DURATION = 300;
 
 export const projectRouter = createTRPCRouter({
     createProject: protectedProcedure.input(
@@ -266,6 +264,6 @@ export const projectRouter = createTRPCRouter({
                 credits: true
             }
         })
-        return {fileCount, userCredits: userCredits?.credits || 0}
+        return {fileCount, userCredits: userCredits?.credits ?? 0}
     })
 })
