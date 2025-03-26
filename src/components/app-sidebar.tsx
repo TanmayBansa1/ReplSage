@@ -43,21 +43,10 @@ const items = [
     }
 ]
 
-// const projects = [
-//     {
-//         name: "Project 1",
-//     },
-//     {
-//         name: "Project 2",
-//     },
-//     {
-//         name: "Project 3"
-//     }
-// ]
 export default function AppSidebar() {
     const pathname = usePathname()
     const { open } = useSidebar()
-    const { projects, selectedProjectID, setSelectedProjectID, project } = useProject()
+    const { projects, selectedProjectID, setSelectedProjectID } = useProject()
 
     return (
         <Sidebar collapsible="icon" variant="floating">
