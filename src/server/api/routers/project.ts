@@ -115,7 +115,11 @@ export const projectRouter = createTRPCRouter({
         return await ctx.db.commit.findMany({
             where: {
                 projectId: input.projectId,
-            }
+            },
+            orderBy: {
+                createdAt: 'desc'
+            },
+            take:10
         })  
     }),
     saveAnswer: protectedProcedure.input(
