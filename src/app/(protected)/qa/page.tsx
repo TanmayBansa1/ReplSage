@@ -1,5 +1,6 @@
 'use client'
 import MDEditor from '@uiw/react-md-editor';
+import Image from 'next/image';
 import React from 'react'
 import QuestionCard from '~/components/ask-question-card';
 import CodeReferences from '~/components/code-references';
@@ -26,7 +27,7 @@ const QNApage = () => {
                         <React.Fragment key={question.id}>
                             <SheetTrigger onClick={() => setQuestionIndex(index)}>
                                 <div className="flex items-center gap-4 bg-white dark:bg-gray-950 rounded-lg p-4 shadow border">
-                                    <img className='rounded-full w-8 h-8' src={question.user.imageUrl ?? ""} alt={question.user.firstName ?? ""} />
+                                    <Image className='rounded-full w-8 h-8' src={question.user.imageUrl ?? ""} alt={question.user.firstName ?? ""} />
                                     <div className="text-left flex flex-col">
                                         <div className="flex items-center gap-2">
                                             <p className='text-gray-700 line-clamp-1 text-lg font-medium dark:text-white'>

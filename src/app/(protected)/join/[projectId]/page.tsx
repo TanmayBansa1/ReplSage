@@ -26,7 +26,7 @@ const JoinHandler = async (props: Props) => {
         await db.user.create({
             data: {
                 id: userId,
-                email: user.emailAddresses[0]?.emailAddress || "",
+                email: user.emailAddresses[0]?.emailAddress ?? "",
                 firstName: user.firstName ,
                 lastName: user.lastName ,
                 imageUrl: user.imageUrl ,
@@ -48,14 +48,14 @@ const JoinHandler = async (props: Props) => {
             throw new Error('Invalid user or project')
         }
 
-        const userToProject = await db.userToProject.create({
+        await db.userToProject.create({
             data: {
                 userId: userId,
                 projectId: projectId
             }
         })
     }catch (e){
-        console.error('You are already a member of this project')
+        console.error('You are already a member of this project',e )
     }
     return redirect('/dashboard')
 }
