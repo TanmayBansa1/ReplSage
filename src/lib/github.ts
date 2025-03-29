@@ -59,7 +59,7 @@ async function summarizeCommit(gitURL: string, commitHash: string){
 }
 export async function pollCommits(projectId: string){
 
-    const {project, gitURL} = await fetchProjectURL(projectId);
+    const {gitURL} = await fetchProjectURL(projectId);
     const commitsRecieved = await getCommitHashes(gitURL)
 
     const processedCommits = await db.commit.findMany({
