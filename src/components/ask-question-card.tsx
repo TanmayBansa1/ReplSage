@@ -129,35 +129,38 @@ const QuestionCard = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
+        className="w-full"
       >
         <Card 
-          className='relative col-span-3 transition-all duration-300 hover:shadow-lg hover:scale-[1.01]'
+          className='relative col-span-2 transition-all duration-300 hover:shadow-2xl hover:scale-[1.01] bg-gradient-to-br from-white/90 to-blue-50/50 dark:from-gray-900/90 dark:to-blue-950/50 border-2 border-blue-100/50 dark:border-blue-900/30 rounded-xl p-4'
         >
-          <CardHeader>
-            <CardTitle className='text-2xl font-semibold'>
-            <Typewriter
-              options={{
-                strings: ['Ask a question'],
-                autoStart: true,
-                loop: true
-              }}
+          <CardHeader className='space-y-3 pb-4 '>
+            <CardTitle className='text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400'>
+              <Typewriter
+                options={{
+                  strings: ['Ask a question'],
+                  autoStart: true,
+                  loop: true
+                }}
               />
             </CardTitle>
-            <p className='text-xs text-muted-foreground'>It can take up to 6 minutes after you have created your project for Sage to understand your repository before it can answer questions </p>
+            <p className='text-xs text-gray-600 dark:text-gray-300 max-w-xl'>
+              It can take up to 6 minutes after you have created your project for Sage to understand your repository before it can answer questions. Feel free to explore and ask about your project&apos;s details.
+            </p>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={onSubmit}>
+          <CardContent className='space-y-5'>
+            <form onSubmit={onSubmit} className='space-y-4'>
               <Textarea 
-                className='text-xl font-semibold' 
+                className='text-2xl font-medium text-gray-800 dark:text-gray-200 bg-white/70 dark:bg-gray-800/70 border-2 border-blue-100 dark:border-blue-900/30 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-700 transition-all duration-300 min-h-[80px]' 
                 placeholder={`how do i edit the favicon in ${project?.name} ?`} 
                 onChange={(e) => setQuestion(e.target.value)} 
               />
               <Button 
                 type='submit' 
-                className='mt-3 w-fit transition-all duration-300 hover:scale-105 active:scale-95' 
+                className='w-full transition-all duration-300 hover:scale-105 active:scale-95 bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 shadow-md hover:shadow-lg text-lg py-3 mt-2' 
                 disabled={loading}
               >
-                Ask Sage <SnowflakeIcon className="ml-2 animate-pulse" />
+                Ask Sage <SnowflakeIcon className="ml-3 h-6 w-6 animate-pulse" />
               </Button>
             </form>
           </CardContent>
