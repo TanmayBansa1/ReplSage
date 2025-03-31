@@ -3,7 +3,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '~/components/ui/sheet';
-import { Button } from '~/components/ui/button';
 import QuestionCard from '~/components/ask-question-card';
 import useProject from '~/hooks/use-project'
 import { api } from '~/trpc/react';
