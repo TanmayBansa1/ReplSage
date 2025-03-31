@@ -77,7 +77,7 @@ const CommitLogItem = ({
     >
       {/* Vertical Git Graph Line */}
       <div 
-        className="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700"
+        className="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-slate-700"
         style={{
           height: '100%',
           transform: index === 0 ? 'translateY(50%)' : 
@@ -87,43 +87,54 @@ const CommitLogItem = ({
       
       {/* Commit Dot */}
       <div 
-        className="absolute left-8 z-10 w-4 h-4 rounded-full bg-gray-200 dark:bg-gray-700"
+        className="absolute left-8 z-10 w-4 h-4 rounded-full bg-gray-200 dark:bg-slate-600"
         style={{ 
           transform: 'translateX(-50%)',
-          border: '2px solid white',
-          boxShadow: '0 0 0 2px #e5e7eb' 
+          border: '2px solid white dark:border-slate-900',
+          boxShadow: '0 0 0 2px #e5e7eb dark:0 0 10px 2px rgba(30, 41, 59, 0.5)' 
         }}
       />
 
       <div className="pl-16 w-full">
-        <Card className="hover:shadow-lg transition-all duration-300 group">
-          <CardHeader className="flex flex-row items-center space-x-4 pb-2">
-            <Avatar>
+        <Card 
+          className="hover:shadow-lg dark:hover:shadow-2xl dark:hover:bg-slate-800/70 
+                     transition-all duration-300 group 
+                     dark:bg-slate-900 dark:border-slate-700 
+                     border-gray-200 shadow-md dark:shadow-xl"
+        >
+          <CardHeader className="flex flex-row items-center space-x-4 pb-2 
+                                 ">
+            <Avatar className="dark:ring-2 dark:ring-blue-500/30">
               <AvatarImage 
                 src={commit.commitAuthorAvatar} 
                 alt={commit.commitAuthor} 
               />
-              <AvatarFallback>
+              <AvatarFallback 
+                className="dark:bg-slate-700 dark:text-slate-300"
+              >
                 {commit.commitAuthor?.charAt(0) || 'C'}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">
               <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-lg line-clamp-1">
+                <h3 className="font-semibold text-lg line-clamp-1 
+                               dark:text-slate-200">
                   {commit.commitMessage || 'Unnamed Commit'}
                 </h3>
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground dark:text-slate-400">
                 {commit.commitAuthor || 'Unknown Author'}
               </p>
             </div>
           </CardHeader>
           <CardContent>
             <TooltipProvider>
-              <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground mb-2">
+              <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground 
+                              dark:text-slate-400 mb-2">
                 <Tooltip>
                   <TooltipTrigger>
-                    <div className="flex items-center space-x-1">
+                    <div className="flex items-center space-x-1 
+                                    dark:hover:text-blue-400 transition-colors">
                       <GitCommit className="h-4 w-4" />
                       <span>{commit.commitHash?.slice(0, 7) || 'N/A'}</span>
                     </div>
@@ -132,7 +143,8 @@ const CommitLogItem = ({
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger>
-                    <div className="flex items-center space-x-1">
+                    <div className="flex items-center space-x-1 
+                                    dark:hover:text-blue-400 transition-colors">
                       <Clock className="h-4 w-4" />
                       <span>{formatTimestamp(commit.commitDate)}</span>
                     </div>
@@ -145,7 +157,7 @@ const CommitLogItem = ({
             </TooltipProvider>
 
             {commit.summary && (
-              <div className="text-sm text-muted-foreground mb-2">
+              <div className="text-sm text-muted-foreground dark:text-slate-400 mb-2">
                 {commit.summary}
               </div>
             )}
