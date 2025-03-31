@@ -6,7 +6,6 @@ import { toast } from 'sonner'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { api } from '~/trpc/react'
-import { useRouter } from 'next/navigation'
 import { Info } from 'lucide-react'
 interface FormInput {
     name: string,
@@ -14,7 +13,6 @@ interface FormInput {
     githubToken?: string
 }
 const CreateProject = () => {
-    const router = useRouter();
     const { register, handleSubmit, reset } = useForm<FormInput>()
     const createProject = api.project.createProject.useMutation();
     const checkCredits = api.project.checkCredits.useMutation();
@@ -26,7 +24,7 @@ const CreateProject = () => {
             createProject.mutate({
                 name: data.name,
                 url: data.url,
-                githubToken: data.githubToken || undefined
+                githubToken: data.githubToken ?? undefined
             }, {
                 onSuccess: () => {
                     toast.success('Project created')
