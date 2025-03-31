@@ -1,11 +1,9 @@
-// Import the functions you need from the SDKs you need
-import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage"
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import { initializeApp } from "firebase/app";
+import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
+
+// Firebase Configuration
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
     authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -14,40 +12,49 @@ const firebaseConfig = {
     messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
-  };
+};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
+// 🔹 Initialize Firebase App Check with reCAPTCHA
+initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider(process.env.NEXT_PUBLIC_FIREBASE_RECAPTCHA_SITE_KEY!),
+    isTokenAutoRefreshEnabled: true, // Automatically refresh tokens
+});
+
 export const uploadFile = async (file: File, setProgress: (progress: number) => void) => {
-
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
-            const storageRef = ref(storage, file.name);
+            // Generate unique filename
+            const uniqueFileName = `${Date.now()}_${file.name}`;
+            const storageRef = ref(storage, `meetings/${uniqueFileName}`);
             const uploadTask = uploadBytesResumable(storageRef, file);
-            uploadTask.on("state_changed", (snapshot) => {
-                const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                setProgress(progress);
-                switch (snapshot.state) {
-                    case 'paused':
-                        console.log('Upload is paused');
-                        break;
-                    case 'running':
-                        console.log('Upload is running');
-                        break;
-                }
-            }, error => {
-                reject(error)
-            }, () => {
-                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
 
-                    resolve(downloadURL);
-                });
-            })
+            uploadTask.on(
+                "state_changed",
+                (snapshot) => {
+                    const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                    setProgress(progress);
+                },
+                (error) => {
+                    console.error('Upload error:', error);
+                    reject(error);
+                },
+                async () => {
+                    try {
+                        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                        resolve(downloadURL);
+                    } catch (urlError) {
+                        console.error('Error getting download URL:', urlError);
+                        reject(urlError);
+                    }
+                }
+            );
         } catch (error) {
-            console.log("error while uploading file",error)
-            reject(error)
+            console.error('Unexpected error in uploadFile:', error);
+            reject(error);
         }
-    })
-}
+    });
+};
