@@ -1,115 +1,178 @@
-"use client"
-import { ExternalLink } from 'lucide-react'
-import Image from 'next/image'
-import Link from 'next/link'
-import React from 'react'
-import { motion, useInView } from 'framer-motion'
-import useProject from '~/hooks/use-project'
-import { cn } from '~/lib/utils'
-import { api } from '~/trpc/react'
+'use client';
+import React, { useRef } from 'react';
+import { motion } from 'framer-motion';
+import { 
+  GitCommit, 
+  Clock 
+} from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
+import { Card, CardContent, CardHeader } from '~/components/ui/card';
+import useProject from '~/hooks/use-project';
+import { api } from '~/trpc/react';
 
-const CommitLogItem = ({ commit, index, totalCommits }: { 
-  commit: any, 
+const CommitLogItem = ({ 
+  commit, 
+  index, 
+  totalCommits 
+}: { 
+  commit: {
+    summary: string | null;
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    projectId: string;
+    commitMessage: string;
+    commitHash: string;
+    commitAuthor: string;
+    commitAuthorAvatar: string;
+    commitDate: Date;
+  }, 
   index: number, 
   totalCommits: number 
 }) => {
-  const ref = React.useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.2 });
+  const ref = useRef(null);
+  
+  const formatTimestamp = (date: Date) => {
+    const now = new Date();
+    const diffInSeconds = Math.round((now.getTime() - date.getTime()) / 1000);
+  
+    const units: Array<[number, Intl.RelativeTimeFormatUnit]> = [
+      [60 * 60 * 24 * 365, 'year'],
+      [60 * 60 * 24 * 30, 'month'],
+      [60 * 60 * 24 * 7, 'week'],
+      [60 * 60 * 24, 'day'],
+      [60 * 60, 'hour'],
+      [60, 'minute'],
+      [1, 'second']
+    ];
+  
+    for (const [seconds, unit] of units) {
+      const value = Math.floor(Math.abs(diffInSeconds) / seconds);
+      if (value >= 1) {
+        return new Intl.RelativeTimeFormat('en', { 
+          numeric: 'auto',
+          style: 'long'
+        }).format(-value, unit);
+      }
+    }
+  
+    return 'Just now';
+  };
 
   return (
-    <motion.li 
+    <motion.div 
       ref={ref}
       initial={{ opacity: 0, y: 50 }}
-      animate={{ 
-        opacity: isInView ? 1 : 0, 
-        y: isInView ? 0 : 50 
+      whileInView={{ 
+        opacity: 1, 
+        y: 0,
+        transition: {
+          duration: 0.5,
+          delay: index * 0.1
+        }
       }}
-      transition={{ 
-        duration: 0.5, 
-        delay: index * 0.1 
-      }}
-      key={commit.id} 
-      className='relative flex items-start gap-x-4 pl-4'
+      viewport={{ once: true, amount: 0.2 }}
+      className="relative flex items-center"
     >
-      <div className={cn(
-        index === totalCommits - 1 ? 'h-6' : '-bottom-6',
-        'absolute left-0 top-0 flex w-6 justify-center'
-      )}>
-        <div className='w-px h-full dark:bg-gray-800 bg-gray-200 absolute left-1/2 transform -translate-x-1/2'></div>
-      </div>
-      <div className='absolute left-0 top-4 w-6 flex justify-center'>
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ 
-            scale: isInView ? 1 : 0.8, 
-            opacity: isInView ? 1 : 0 
-          }}
-          transition={{ duration: 0.3, delay: index * 0.1 }}
-          className='z-10'
-        >
-          <Image 
-            src={commit.commitAuthorAvatar} 
-            alt={commit.commitAuthor} 
-            width={48} 
-            height={48} 
-            className='rounded-full w-8 h-8 hover:animate-pulse hover:scale-105'
-          />
-        </motion.div>
-      </div>
-      <motion.div 
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ 
-          opacity: isInView ? 1 : 0, 
-          x: isInView ? 0 : -50 
+      {/* Vertical Git Graph Line */}
+      <div 
+        className="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700"
+        style={{
+          height: '100%',
+          transform: index === 0 ? 'translateY(50%)' : 
+                    index === totalCommits - 1 ? 'translateY(-50%)' : ''
         }}
-        transition={{ duration: 0.5, delay: index * 0.1 }}
-        className='flex-auto ml-10 rounded-lg dark:bg-gray-900 bg-white p-3 ring-1 ring-inset dark:ring-gray-500 ring-gray-200'
-      >
-        <div className='flex justify-between gap-x-4'>
-          <Link href={`${commit.project?.url}/commits/${commit.commitHash}`} className='py-0.5 text-xs leading-5 font-medium text-gray-900'>
-            <span className='font-semibold text-lg dark:text-white text-gray-800'>
-              {commit.commitAuthor}
-            </span>
-            <span className='inline-flex items-center dark:text-gray-400 text-lg text-gray-500 ml-1'>
-              committed
-              <ExternalLink className='size-4 ml-2 flex-shrink-0' />
-            </span>
-          </Link>
-        </div>
-        <motion.span 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isInView ? 1 : 0 }}
-          transition={{ duration: 0.5, delay: (index * 0.1) + 0.2 }}
-          className='font-semibold block mt-2'
-        >
-          {commit.commitMessage}
-        </motion.span>
-        <motion.pre 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ 
-            opacity: isInView ? 1 : 0, 
-            y: isInView ? 0 : 20 
-          }}
-          transition={{ duration: 0.5, delay: (index * 0.1) + 0.3 }}
-          className='mt-2 whitespace-pre-wrap text-sm leading-6 text-gray-600 dark:text-gray-400'
-        >
-          {commit.summary}
-        </motion.pre>
-      </motion.div>
-    </motion.li>
+      />
+      
+      {/* Commit Dot */}
+      <div 
+        className="absolute left-8 z-10 w-4 h-4 rounded-full bg-gray-200 dark:bg-gray-700"
+        style={{ 
+          transform: 'translateX(-50%)',
+          border: '2px solid white',
+          boxShadow: '0 0 0 2px #e5e7eb' 
+        }}
+      />
+
+      <div className="pl-16 w-full">
+        <Card className="hover:shadow-lg transition-all duration-300 group">
+          <CardHeader className="flex flex-row items-center space-x-4 pb-2">
+            <Avatar>
+              <AvatarImage 
+                src={commit.commitAuthorAvatar} 
+                alt={commit.commitAuthor} 
+              />
+              <AvatarFallback>
+                {commit.commitAuthor?.charAt(0) || 'C'}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-lg line-clamp-1">
+                  {commit.commitMessage || 'Unnamed Commit'}
+                </h3>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {commit.commitAuthor || 'Unknown Author'}
+              </p>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <TooltipProvider>
+              <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground mb-2">
+                <Tooltip>
+                  <TooltipTrigger>
+                    <div className="flex items-center space-x-1">
+                      <GitCommit className="h-4 w-4" />
+                      <span>{commit.commitHash?.slice(0, 7) || 'N/A'}</span>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>Full Commit Hash: {commit.commitHash || 'Unknown'}</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <div className="flex items-center space-x-1">
+                      <Clock className="h-4 w-4" />
+                      <span>{formatTimestamp(commit.commitDate)}</span>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {commit.commitDate.toLocaleString()}
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            </TooltipProvider>
+
+            {commit.summary && (
+              <div className="text-sm text-muted-foreground mb-2">
+                {commit.summary}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </motion.div>
   );
 };
 
 const CommitLog = () => {
-  const { selectedProjectID} = useProject();
+  const { selectedProjectID } = useProject();
 
-  const { data: commits } = api.project.getCommits.useQuery({ projectId: selectedProjectID });
+  const { data: commits, isLoading } = api.project.getCommits.useQuery(
+    { projectId: selectedProjectID }, 
+    { enabled: !!selectedProjectID }
+  );
+
+  if (isLoading) return <div>Loading commits...</div>;
+  if (!commits || commits.length === 0) return <div>No commits found</div>;
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
+      className="relative pl-8"
     >
       <ul className='space-y-6'>
         {commits?.map((commit, index) => (
@@ -122,7 +185,7 @@ const CommitLog = () => {
         ))}
       </ul>
     </motion.div>
-  )
-}
+  );
+};
 
-export default CommitLog
+export default CommitLog;
