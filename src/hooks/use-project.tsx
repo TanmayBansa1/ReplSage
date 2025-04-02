@@ -12,7 +12,7 @@ const useProject = () => {
         selectedProjectID, 
         setSelectedProjectID, 
         project
-    }), [projects, selectedProjectID, project])
+    }), [projects, selectedProjectID, setSelectedProjectID, project])
 }
 
 export default useProject

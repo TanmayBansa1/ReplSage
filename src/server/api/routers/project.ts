@@ -220,12 +220,43 @@ export const projectRouter = createTRPCRouter({
             projectId: z.string(),
         })
     ).mutation(async ({ ctx, input }) => {
-        return await ctx.db.project.update({
+        await ctx.db.project.update({
             where: {
                 id: input.projectId,
             },
             data: {
                 deletedAt: new Date()
+            }
+        })
+        await ctx.db.userToProject.deleteMany({
+            where: {
+                projectId: input.projectId
+            }
+        })
+        await ctx.db.question.deleteMany({
+            where: {
+                projectId: input.projectId
+            }
+        })
+        await ctx.db.commit.deleteMany({
+            where: {
+                projectId: input.projectId
+            }
+        })
+        await ctx.db.meeting.deleteMany({
+            where: {
+                projectId: input.projectId
+            }
+        })
+        await ctx.db.issue.deleteMany({
+            where: {
+                meetingId: {
+                    in: (await ctx.db.meeting.findMany({
+                        where: {
+                            projectId: input.projectId
+                        }
+                    })).map(meeting => meeting.id)
+                }
             }
         })
     }),
