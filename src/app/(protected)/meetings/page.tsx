@@ -110,7 +110,7 @@ const Meetings = () => {
                             className='space-y-4'
                             variants={containerVariants}
                         >
-                            {meetings?.map((meeting, index) => (
+                            {meetings?.map((meeting) => (
                                 <motion.li 
                                     key={meeting.id}
                                     variants={itemVariants}
@@ -179,6 +179,7 @@ const Meetings = () => {
                                                         },
                                                         onError: (err) => {
                                                             toast.error("Error while deleting meeting")
+                                                            console.log(err, "error while deleting meeting")
                                                         }
                                                     })}
                                                     className='flex items-center gap-2'
