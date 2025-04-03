@@ -65,10 +65,10 @@ export const projectRouter = createTRPCRouter({
             });
             
             // Perform async operations without blocking the response
-            Promise.all([
+            void Promise.all([
                 indexGitRepo({gitUrl: input.url, gitToken: input.githubToken, projectId: project.id}),
-                await pollCommits(project.id),
-                await ctx.db.user.update({
+                pollCommits(project.id),
+                ctx.db.user.update({
                     where: {
                         id: ctx.user.userId!
                     },
@@ -80,6 +80,7 @@ export const projectRouter = createTRPCRouter({
                 })
             ]).catch(err => {
                 console.error('Background project setup error:', err);
+                // Optional: Send error to monitoring service
             });
 
             return project;
@@ -257,6 +258,16 @@ export const projectRouter = createTRPCRouter({
                         }
                     })).map(meeting => meeting.id)
                 }
+            }
+        })
+        await ctx.db.sourceCodeEmbedding.deleteMany({
+            where: {
+                projectId: input.projectId
+            }
+        })
+        await ctx.db.project.delete({
+            where: {
+                id: input.projectId
             }
         })
     }),
