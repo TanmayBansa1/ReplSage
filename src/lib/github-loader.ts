@@ -38,7 +38,7 @@ async function getFileCount(path: string, octokit: Octokit, githubOwner: string,
 export const checkCredits = async (githubUrl: string, githubToken?: string)=>{
 
     const octokit = new Octokit({
-        auth: githubToken ?? process.env.GITHUB_TOKEN
+        auth: githubToken || process.env.GITHUB_TOKEN
     })
 
     const githubOwner = githubUrl.split('/')[3]
@@ -58,7 +58,7 @@ export async function LoadGitRepo({ gitUrl, gitToken }: { gitUrl: string, gitTok
     for (const branch of possibleBranches) {
         try {
             const loader = new GithubRepoLoader(gitUrl, {
-                accessToken: gitToken ?? process.env.GITHUB_TOKEN,
+                accessToken: gitToken || process.env.GITHUB_TOKEN,
                 ignoreFiles: [".gitignore", ".gitattributes", ".git/", "package-lock.json", "yarn.lock", "pnpm-lock.yaml", "pnpm-workspace.yaml", "bun.lockb", "node_modules", ".DS_Store", "venv",
                     ".env", "**/.svg", "**/*.svg", "**/icons/**", "**/images/**"],
                 branch: branch,

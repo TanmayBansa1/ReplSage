@@ -299,6 +299,6 @@ export const projectRouter = createTRPCRouter({
                 credits: true
             }
         })
-        return {fileCount, userCredits: userCredits?.credits ?? 0}
+        return {fileCount, userCredits: userCredits?.credits || 0}
     })
 })

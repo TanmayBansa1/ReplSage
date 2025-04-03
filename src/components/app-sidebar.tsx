@@ -187,11 +187,11 @@ export default function AppSidebar() {
                 </SidebarGroup>
                 <Separator />
                 <SidebarGroup>
-                    <SidebarGroupLabel>YOUR PROJECTS</SidebarGroupLabel>
+                    <SidebarGroupLabel>{projects?.length ? "YOUR PROJECTS" : "NO PROJECTS"}</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             <AnimatePresence>
-                                {!isProjectsLoaded ? (
+                                {!isProjectsLoaded && projects?.length !==0 ? (
                                     <motion.div
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}

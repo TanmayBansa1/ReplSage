@@ -2,9 +2,50 @@ import { Octokit } from "octokit"
 import { db } from "~/server/db"
 import { generateSummary } from "./gemini"
 import axios from 'axios';
+
+// New rate limit tracking interface
+interface RateLimitInfo {
+  limit: number;
+  remaining: number;
+  reset: Date;
+  used: number;
+}
+
 export const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN,
 })
+
+// New function to check and log GitHub API rate limits
+export const checkGitHubRateLimit = async (): Promise<RateLimitInfo | null> => {
+  try {
+    const response = await octokit.rest.rateLimit.get();
+    const coreRateLimit = response.data.resources.core;
+
+    const rateLimitInfo: RateLimitInfo = {
+      limit: coreRateLimit.limit,
+      remaining: coreRateLimit.remaining,
+      reset: new Date(coreRateLimit.reset * 1000),
+      used: coreRateLimit.limit - coreRateLimit.remaining
+    };
+
+    console.log(' GitHub API Rate Limit Status:', {
+      totalLimit: rateLimitInfo.limit,
+      remainingRequests: rateLimitInfo.remaining,
+      percentUsed: ((rateLimitInfo.used / rateLimitInfo.limit) * 100).toFixed(2) + '%',
+      resetTime: rateLimitInfo.reset.toLocaleString()
+    });
+
+    // Optional: Add a warning if close to rate limit
+    if (rateLimitInfo.remaining < rateLimitInfo.limit * 0.1) {
+      console.warn(' GitHub API rate limit is nearly exhausted! Reset at:', rateLimitInfo.reset);
+    }
+
+    return rateLimitInfo;
+  } catch (error) {
+    console.error(' Error checking GitHub rate limit:', error);
+    return null;
+  }
+}
 
 type Response ={
     commitMessage: string
@@ -60,6 +101,7 @@ async function summarizeCommit(gitURL: string, commitHash: string){
 export async function pollCommits(projectId: string){
 
     const {gitURL} = await fetchProjectURL(projectId);
+    await checkGitHubRateLimit(); // Call the rate limit function before making API requests
     const commitsRecieved = await getCommitHashes(gitURL)
 
     const processedCommits = await db.commit.findMany({

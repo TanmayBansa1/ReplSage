@@ -1,7 +1,7 @@
 
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { initializeApp } from "firebase/app";
-import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
+import { getToken, initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 
 // Firebase Configuration
 const firebaseConfig = {
@@ -19,7 +19,7 @@ const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
 // 🔹 Initialize Firebase App Check with reCAPTCHA
-initializeAppCheck(app, {
+export const appCheck = initializeAppCheck(app, {
     provider: new ReCaptchaV3Provider(process.env.NEXT_PUBLIC_FIREBASE_RECAPTCHA_SITE_KEY!),
     isTokenAutoRefreshEnabled: true, // Automatically refresh tokens
 });
@@ -27,10 +27,25 @@ initializeAppCheck(app, {
 export const uploadFile = async (file: File, setProgress: (progress: number) => void) => {
     return new Promise(async (resolve, reject) => {
         try {
+            // 🔹 Get App Check token before uploading
+            const appCheckToken = await getToken(appCheck, true);  
+            if (!appCheckToken?.token) {
+                throw new Error("Failed to get App Check token");
+            }
+            console.log("App Check token:", appCheckToken.token);
+
             // Generate unique filename
             const uniqueFileName = `${Date.now()}_${file.name}`;
             const storageRef = ref(storage, `meetings/${uniqueFileName}`);
-            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            // 🔹 Set request headers with App Check token
+            const metadata = {
+                customMetadata: {
+                    "firebase-app-check": appCheckToken.token,
+                },
+            };
+
+            const uploadTask = uploadBytesResumable(storageRef, file, metadata);
 
             uploadTask.on(
                 "state_changed",
@@ -39,7 +54,7 @@ export const uploadFile = async (file: File, setProgress: (progress: number) => 
                     setProgress(progress);
                 },
                 (error) => {
-                    console.error('Upload error:', error);
+                    console.error("Upload error:", error);
                     reject(error);
                 },
                 async () => {
@@ -47,14 +62,15 @@ export const uploadFile = async (file: File, setProgress: (progress: number) => 
                         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
                         resolve(downloadURL);
                     } catch (urlError) {
-                        console.error('Error getting download URL:', urlError);
+                        console.error("Error getting download URL:", urlError);
                         reject(urlError);
                     }
                 }
             );
         } catch (error) {
-            console.error('Unexpected error in uploadFile:', error);
+            console.error("Unexpected error in uploadFile:", error);
             reject(error);
         }
     });
 };
+
