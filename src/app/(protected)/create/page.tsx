@@ -24,7 +24,7 @@ const CreateProject = () => {
             createProject.mutate({
                 name: data.name,
                 url: data.url,
-                githubToken: data.githubToken ?? undefined
+                githubToken: data.githubToken || undefined
             }, {
                 onSuccess: () => {
                     toast.success('Project created')
