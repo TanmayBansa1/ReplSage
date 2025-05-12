@@ -5,6 +5,8 @@ import { auth } from '@clerk/nextjs/server';
 
 export const MAX_DURATION = 300; 
 
+export const runtime = 'nodejs'
+
 export async function POST(req: NextRequest) {
   try {
     // Get the server-side session
