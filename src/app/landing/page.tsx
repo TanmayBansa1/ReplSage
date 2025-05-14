@@ -286,7 +286,7 @@ export default function LandingPage() {
             variants={itemVariants}
             className="flex justify-center space-x-4"
             >
-            <Link href="/sign-up">
+            <Link href="/sign-in">
               <AnimatedGetStartedButton />
             </Link>
           </motion.div>
@@ -366,7 +366,7 @@ export default function LandingPage() {
               variants={itemVariants}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => router.push('/sign-up')} 
+              onClick={() => router.push('/sign-in')} 
               className="px-8 py-4 bg-white text-purple-600 rounded-lg hover:bg-slate-100 transition font-semibold"
               >
               Try ReplSage Free
